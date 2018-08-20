@@ -1,0 +1,2 @@
+# minesweeperJS
+CLI minesweeper
