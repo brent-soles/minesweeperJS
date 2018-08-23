@@ -74,7 +74,16 @@ const populateBombs = (mineField, numOfBombs) => {
       else if(colIndex - 1 >= 0 && mineField[rowIndex][colIndex - 1] === ' '){
         mineField[rowIndex][colIndex - 1] = 'B';
       } else {
-        console.log('No assign: paniccccc');
+        //console.log('No assign: paniccccc');
+        let assigned = false;
+        while(!assigned){
+          rowIndex = Math.floor(Math.random() * (numRows));
+          colIndex = Math.floor(Math.random() * (numCols));
+          if(mineField[rowIndex][colIndex] !== 'B'){
+            mineField[rowIndex][colIndex] = 'B'
+            assigned = true;
+          }
+        }
       }
     } else { 
       mineField[rowIndex][colIndex] = 'B';
@@ -86,7 +95,7 @@ const populateBombs = (mineField, numOfBombs) => {
 
 
 const mineBoard = generateBoard(3, 3);
-populateBombs(mineBoard, 3);
+populateBombs(mineBoard, 8);
 printBoard(mineBoard);
 
 const playerBoard = generateBoard(3, 3);
