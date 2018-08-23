@@ -1,26 +1,3 @@
-/* 
-Generates a board with # or rows/columns
-returns the created board;
-*/
-const generateBoard = (rows, cols) => {
-  
-  if(!rows || !cols){
-    console.log('generateBoard: invalid args');
-    return;
-  }
-
-  let resultBoard = [];
-
-  for(let i = 0; i < rows; i++){
-    resultBoard.push([]);
-    for(let j = 0; j < cols; j++){
-      resultBoard[i].push(' ');
-    }
-  }
-
-  return resultBoard;
-}
-
 /**
  * Prints the board
  * @param {board} board 
@@ -32,27 +9,59 @@ const printBoard = (board) => {
   }
 };
 
+/* 
+Generates a board with # or rows/columns
+returns the created board;
+*/
+const generatePlayerBoard = (rows, cols) => {
+  
+  if(!rows || !cols){
+    console.log('generateBoard: invalid args');
+    return;
+  }
+
+  let board = [];
+
+  for(let i = 0; i < rows; i++){
+    board.push([]);
+    for(let j = 0; j < cols; j++){
+      board[i].push(' ');
+    }
+  }
+
+  return board;
+}
+
 /**
  * populates a board with mines
- * @param {*} mineField 
+ * @param {*} board 
  */
-const populateBombs = (mineField, numOfBombs) => {
-  
-  // If no minefield passed.
-  if(!mineField){
-    console.log('populateBombs: empty array passed');
-    return 0;
+const generateBombBoard = (row, col, numOfBombs) => {
+  // If no rows/columns
+  if(!row || !col){
+    console.log('generateBoard: invalid args');
+    return;
+  }
+
+  let board = [];
+
+  for(let i = 0; i < row; i++){
+    board.push([]);
+    for(let j = 0; j < col; j++){
+      board[i].push(' ');
+    }
   }
   
   // Case: no bomb # passed, or # of bombs exceeds number of spaces
-  if(!numOfBombs || numOfBombs >= (mineField.length * mineField[0].length)){
+  if(!numOfBombs || numOfBombs >= (row * col)){
     console.log('populateBombs: invalid bombs');
     return 0;
   }
 
   let bombCounter = 0;
-  let numRows = mineField.length;
-  let numCols = mineField[0].length;
+  // Need to replace variables
+  let numRows = row;
+  let numCols = col;
 
   while (bombCounter < numOfBombs){
     let rowIndex = Math.floor(Math.random() * (numRows));
@@ -60,43 +69,42 @@ const populateBombs = (mineField, numOfBombs) => {
     
     // Checks to see if a bomb is already placed
     // in the target square.
-    if(mineField[rowIndex][colIndex] === 'B'){
+    if(board[rowIndex][colIndex] === 'B'){
       //Right Space
-      if(colIndex + 1 < numCols && mineField[rowIndex][colIndex + 1] === ' '){
-        mineField[rowIndex][colIndex + 1] = 'B';
+      if(colIndex + 1 < numCols && board[rowIndex][colIndex + 1] === ' '){
+        board[rowIndex][colIndex + 1] = 'B';
       } //Upper space
-      else if (rowIndex - 1 >= 0 && mineField[rowIndex - 1][colIndex] === ' '){
-        mineField[rowIndex - 1][colIndex] = 'B';
+      else if (rowIndex - 1 >= 0 && board[rowIndex - 1][colIndex] === ' '){
+        board[rowIndex - 1][colIndex] = 'B';
       } // Down space 
-      else if(rowIndex + 1 < numRows && mineField[rowIndex + 1][colIndex + 1] === ' '){
-        mineField[rowIndex + 1][colIndex] = 'B';
+      else if(rowIndex + 1 < numRows && board[rowIndex + 1][colIndex + 1] === ' '){
+        board[rowIndex + 1][colIndex] = 'B';
       } //Left Space 
-      else if(colIndex - 1 >= 0 && mineField[rowIndex][colIndex - 1] === ' '){
-        mineField[rowIndex][colIndex - 1] = 'B';
+      else if(colIndex - 1 >= 0 && board[rowIndex][colIndex - 1] === ' '){
+        board[rowIndex][colIndex - 1] = 'B';
       } else {
-        //console.log('No assign: paniccccc');
+        // worst case scenario
         let assigned = false;
         while(!assigned){
           rowIndex = Math.floor(Math.random() * (numRows));
           colIndex = Math.floor(Math.random() * (numCols));
-          if(mineField[rowIndex][colIndex] !== 'B'){
-            mineField[rowIndex][colIndex] = 'B'
+          if(board[rowIndex][colIndex] !== 'B'){
+            board[rowIndex][colIndex] = 'B'
             assigned = true;
           }
         }
       }
     } else { 
-      mineField[rowIndex][colIndex] = 'B';
+      board[rowIndex][colIndex] = 'B';
     }
     bombCounter++;
   }
-
+  return board;
 };
 
 
-const mineBoard = generateBoard(3, 3);
-populateBombs(mineBoard, 8);
+const mineBoard = generateBombBoard(3, 3, 8);
 printBoard(mineBoard);
 
-const playerBoard = generateBoard(3, 3);
+const playerBoard = generatePlayerBoard(3, 3);
 printBoard(playerBoard);
