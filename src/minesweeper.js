@@ -4,9 +4,10 @@
  */
 const printBoard = (board) => {
   console.log('Current board:');
-  for(let i = 0; i < board.length; i++){
-    console.log(board[i].join(' | '));
-  }
+
+  console.log(board.map((row) => {
+    return row.join(' | ');
+  }).join('\n'));
 };
 
 /* 
@@ -23,10 +24,11 @@ const generatePlayerBoard = (rows, cols) => {
   let board = [];
 
   for(let i = 0; i < rows; i++){
-    board.push([]);
+    let row = [];
     for(let j = 0; j < cols; j++){
-      board[i].push(' ');
+      row.push(' ');
     }
+    board.push(row);
   }
 
   return board;
@@ -44,12 +46,13 @@ const generateBombBoard = (row, col, numOfBombs) => {
   }
 
   let board = [];
-
+  let nRow;
   for(let i = 0; i < row; i++){
-    board.push([]);
+    nRow = [];
     for(let j = 0; j < col; j++){
-      board[i].push(' ');
+      nRow.push(null);
     }
+    board.push(nRow);
   }
   
   // Case: no bomb # passed, or # of bombs exceeds number of spaces
@@ -69,18 +72,18 @@ const generateBombBoard = (row, col, numOfBombs) => {
     
     // Checks to see if a bomb is already placed
     // in the target square.
-    if(board[rowIndex][colIndex] === 'B'){
+    if(board[rowIndex][colIndex]){
       //Right Space
-      if(colIndex + 1 < numCols && board[rowIndex][colIndex + 1] === ' '){
+      if(colIndex + 1 < numCols && !board[rowIndex][colIndex + 1]){
         board[rowIndex][colIndex + 1] = 'B';
       } //Upper space
-      else if (rowIndex - 1 >= 0 && board[rowIndex - 1][colIndex] === ' '){
+      else if (rowIndex - 1 >= 0 && !board[rowIndex - 1][colIndex]){
         board[rowIndex - 1][colIndex] = 'B';
       } // Down space 
-      else if(rowIndex + 1 < numRows && board[rowIndex + 1][colIndex + 1] === ' '){
+      else if(rowIndex + 1 < numRows && !board[rowIndex + 1][colIndex + 1]){
         board[rowIndex + 1][colIndex] = 'B';
       } //Left Space 
-      else if(colIndex - 1 >= 0 && board[rowIndex][colIndex - 1] === ' '){
+      else if(colIndex - 1 >= 0 && !board[rowIndex][colIndex - 1]){
         board[rowIndex][colIndex - 1] = 'B';
       } else {
         // worst case scenario
@@ -88,7 +91,7 @@ const generateBombBoard = (row, col, numOfBombs) => {
         while(!assigned){
           rowIndex = Math.floor(Math.random() * (numRows));
           colIndex = Math.floor(Math.random() * (numCols));
-          if(board[rowIndex][colIndex] !== 'B'){
+          if(!board[rowIndex][colIndex]){
             board[rowIndex][colIndex] = 'B'
             assigned = true;
           }
@@ -103,7 +106,7 @@ const generateBombBoard = (row, col, numOfBombs) => {
 };
 
 
-const mineBoard = generateBombBoard(3, 3, 8);
+const mineBoard = generateBombBoard(3, 3, 7);
 printBoard(mineBoard);
 
 const playerBoard = generatePlayerBoard(3, 3);
