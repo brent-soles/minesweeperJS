@@ -106,8 +106,85 @@ const generateBombBoard = (row, col, numOfBombs) => {
 };
 
 
-const mineBoard = generateBombBoard(3, 3, 7);
+/**
+ * Returns number of bombs that are adjacent to a certain tile
+ */
+
+const getNumberOfNeighborBombs = (rowIndex, colIndex, board) => {
+  // Base case
+  if(board[rowIndex][colIndex] === undefined){
+    console.log('getNumberOfNeighborBombs: undefined index');
+    return null;
+  }
+
+  // Hard code ftw
+  const neighborOffsets = [
+    [-1, 0],  // Above
+    [-1, 1],  // Above right
+    [0, 1],   // right
+    [1, 1],   // bottom right
+    [1, 0],   // bottom
+    [1, -1],  // bottom left
+    [0, -1],  // left
+    [-1, -1]  // above left
+  ];
+  const numOfRows = board.length;
+  const numOfCols = board[0].length;
+  let adjacentBombs = 0;
+
+  neighborOffsets.forEach( (offset) => {
+    let rowOffset = rowIndex + offset[0];
+    let colOffset = colIndex + offset[1];
+    
+    // Check to see if offset is inbounds
+    if( (rowOffset) < numOfRows && (rowOffset) >= 0 && (colOffset) < numOfCols && (colOffset) >= 0){
+      let currentTile = board[rowOffset][colOffset];
+      if(currentTile === 'B'){      
+        adjacentBombs++;
+      }
+    }
+  });
+
+  return adjacentBombs;
+}
+
+/**
+ * Function for player to flip a tile
+ */
+const flipTile = (playerBoard, bombBoard, rowIndex, colIndex) => {
+  //Base case
+  if(playerBoard[rowIndex][colIndex] === undefined){
+    console.log("flipTile: out of bounds");
+    return null;
+  }
+
+  // Space has a bomb in it 
+  if (bombBoard[rowIndex][colIndex] === 'B'){
+    playerBoard[rowIndex][colIndex] = 'B';
+    console.log("GAME OVER: You stepped on a mine");
+
+  } // Space has not been set
+  else if(playerBoard[rowIndex][colIndex] === ' ') {
+    playerBoard[rowIndex][colIndex] = getNumberOfNeighborBombs(rowIndex, colIndex, bombBoard);
+  } // Space has already been played 
+  else {
+    console.log('You already flipped that tile');
+  }
+
+};
+
+// Function testing
+
+const mineBoard = generateBombBoard(3, 3, 3);
 printBoard(mineBoard);
 
+console.log(getNumberOfNeighborBombs(1, 1, mineBoard));
+
 const playerBoard = generatePlayerBoard(3, 3);
+printBoard(playerBoard);
+
+flipTile(playerBoard, mineBoard, 0, 0);
+printBoard(playerBoard);
+
+flipTile(playerBoard, mineBoard, 0, 0);
 printBoard(playerBoard);
